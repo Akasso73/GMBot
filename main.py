@@ -29,7 +29,7 @@ def main():
             await ctx.respond(embed=discord.Embed(title="Nie masz uprawnień!", description="Nie masz uprawnień, aby używać tej komendy."),ephemeral=True)
             return
         if strength + agility + magic + defense > 11:
-            await ctx.respond(embed=discord.Embed(title="Nieprawidłowa suma!", description="Suma statysyk musi wynosić 11."),ephemeral=True)
+            await ctx.respond(embed=discord.Embed(title="Nieprawidłowe statystyki!", description="Suma punktów statysyk musi wynosić 11."),ephemeral=True)
             return
         if not cm.Warrior.character_exists(name):
             warrior = cm.Warrior(name, health, strength, agility, magic, defense, discord_user_id)
