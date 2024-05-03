@@ -21,15 +21,20 @@ def main():
                    strength: discord.Option(int, "Siła", choices=[1,2,3,4,5,6]), 
                    agility: discord.Option(int, "Zręczność", choices=[1,2,3,4,5,6] ), 
                    magic: discord.Option(int, "Magia",choices=[1,2,3,4,5,6]), 
-                   defense: discord.Option(int, "Obrona",choices=[1,2,3,4,5,6])):
-        discord_user_id = str(ctx.author.id)
-        if not cm.Warrior.character_exists(name, discord_user_id):
+                   defense: discord.Option(int, "Obrona",choices=[1,2,3,4,5,6]),
+                   player: discord.Option(discord.User, "Gracz")):
+        role_ids = [1230571733363200159, 1236033602815393852, 1230571733409333330]
+        discord_user_id = player.id
+        if not ctx.author.guild_permissions.administrator or not any(role.id in role_ids for role in ctx.author.roles):
+            await ctx.respond(embed=discord.Embed(title="Nie masz uprawnień!", description="Nie masz uprawnień, aby używać tej komendy."))
+            return
+        
+        if not cm.Warrior.character_exists(name):
             warrior = cm.Warrior(name, health, strength, agility, magic, defense, discord_user_id)
             warrior.save_to_db()
-            await ctx.respond(embed = discord.Embed(title="Postać dodana!", description=f"Dodano postać {name} do bazy danych!"))
+            await ctx.respond(embed = discord.Embed(title="Postać dodana!", description=f"Dodano postać **{name}** do bazy danych!"))
         else:
-            await ctx.respond(embed = discord.Embed(title="Postać już istnieje", description=f"Ten gracz już posiada postać o imieniu {name}!"))
-        
+            await ctx.respond(embed = discord.Embed(title="Postać już istnieje", description=f"Istnieje już postać o imieniu **{name}**!"))
 
     bot.run(TOKEN)
 

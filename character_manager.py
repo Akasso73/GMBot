@@ -34,11 +34,11 @@ class Warrior:
         conn.close()
 
     @classmethod
-    def character_exists(cls, name: str, discord_user_id: str):
+    def character_exists(cls, name: str):
         conn = sqlite3.connect('warriors.db')
         c = conn.cursor()
-        c.execute("CREATE TABLE IF NOT EXISTS warriors (name text, health integer, strength integer, agility integer, magic integer, defense integer, discord_user_id text)")
-        c.execute("SELECT * FROM warriors WHERE name=? AND discord_user_id=?", (name, discord_user_id))
+        c.execute("CREATE TABLE IF NOT EXISTS warriors (name text, health isnteger, strength integer, agility integer, magic integer, defense integer, discord_user_id text)")
+        c.execute("SELECT * FROM warriors WHERE name=?", (name,))
         result = c.fetchone()
         conn.close()
         return result is not None
