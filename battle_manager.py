@@ -1,44 +1,36 @@
 import random
+import character_manager as cm
+    
+def attack(attacker: cm.Warrior, target: cm.Warrior,type: str):
+    if type == "magical":
+        damage = attacker.magic * random.randint(1,6)
+    elif type == "physical":
+        damage = attacker.strength * random.randint(1,6)
+    target.health -= damage
+    if target.health < 0:
+        target.health = 0
+    print(f"{attacker.name} zadał {damage} obrażeń {target.name}!\n{target.name} ma teraz {target.health} punktów życia\n")
 
-class Warrior:
-    def __init__(self, name: str, health: int, strength: int, agility: int, magic: int):
-        self.name = name
-        self.health = health
-        self.strength = strength
-        self.agility = agility
-        self.magic = magic
-
-    def copy(self):
-        return Warrior(self.name, self.health, self.strength, self.agility, self.magic)
-
-class BattleManager:
-    def __init__(self, character1: Warrior, character2: Warrior):
-        self.character1 = character1
-        self.character2 = character2
-
-    def attack_physical(self, attacker: Warrior, target: Warrior):
-        damage = attacker.strength * random.uniform(0.8, 1.2)
-        target.health -= damage
-
-    def attack_magical(self, attacker: Warrior, target: Warrior):
-        damage = attacker.magic * random.uniform(0.8, 1.2)
-        target.health -= damage
-
-def start_battle(character1: Warrior, character2: Warrior):
+def start_battle(character1: cm.Warrior, character2: cm.Warrior):
     character1 = character1.copy()
     character2 = character2.copy()
-
-    battle_manager = BattleManager(character1, character2)
-    battle_manager.attack_magical(character1, character2)
-    battle_manager.attack_physical(character2, character1)
-
-    print(f"{character1.name} health: {character1.health}")
-    print(f"{character2.name} health: {character2.health}")
-
-a = Warrior("Warrior1", 100, 10, 10, 10)
-b = Warrior("Warrior2", 100, 10, 10, 10)
-
-start_battle(a, b)
-
-print(f"{a.name} health: {a.health}")
-print(f"{b.name} health: {b.health}")
+    isBattle = True
+    if character1.agility > character2.agility:
+        attacker = character1
+        target = character2
+    else:
+        attacker = character2
+        target = character1
+    print(f"{attacker.name} zaczyna!\n")
+    while isBattle:
+        option = int(input("1. Atak fizyczny\n2. Atak magiczny\n"))
+        if option == 1:
+            attack(attacker, target, "physical")
+        elif option == 2:
+            attack(attacker, target, "magical")
+        if target.health <= 0:
+            print(f"{target.name} przegrał!")
+            isBattle = False
+            return
+        print(f"{attacker.name} atakuje {target.name}\n")
+        attacker, target = target, attacker
