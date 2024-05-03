@@ -3,6 +3,10 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# dotenv environment variables file
+.env
+.env.test
+
 # C extensions
 *.so
 
