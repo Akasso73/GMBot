@@ -3,11 +3,11 @@ import sqlite3
 class Warrior:
     def __init__(self, name: str, health: int, strength: int, agility: int, magic: int, defense: int, discord_user_id: str):
         self.name = name
-        self.health = 100 + (15 * (health-1))
-        self.strength = strength+2
+        self.health = health
+        self.strength = strength
         self.agility = agility
         self.magic = magic
-        self.defense = 100-(4 * (defense - 1))
+        self.defense = defense
         self.discord_user_id = discord_user_id
 
     def copy(self):
@@ -42,4 +42,12 @@ class Warrior:
         result = c.fetchone()
         conn.close()
         return result is not None
+    
+    def get_characters_by_user_id(discord_user_id: str):
+        conn = sqlite3.connect('warriors.db')
+        c = conn.cursor()
+        c.execute("SELECT * FROM warriors WHERE discord_user_id=?", (discord_user_id,))
+        results = c.fetchall()
+        conn.close()
+        return results
     

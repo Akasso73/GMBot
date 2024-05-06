@@ -16,13 +16,13 @@ def main():
 
     @bot.slash_command(description="Dodaj postać do bazy danych. Tylko dla adminów!")
     async def addcharacter(ctx: discord.ApplicationContext,
-                   name: discord.Option(str, "Imię postaci",max_length=60), 
-                   health: discord.Option(int, "Zdrowie", max_value=6, min_value=1), 
-                   strength: discord.Option(int, "Siła", max_value=6, min_value=1), 
-                   agility: discord.Option(int, "Zręczność", max_value=6, min_value=1),  
-                   magic: discord.Option(int, "Magia",max_value=6, min_value=1), 
-                   defense: discord.Option(int, "Obrona",max_value=6, min_value=1),
-                   player: discord.Option(discord.User, "Gracz")): 
+                   name: discord.Option(str, "Imię postaci",max_length=60),  # type: ignore
+                   health: discord.Option(int, "Zdrowie", max_value=6, min_value=1),  # type: ignore
+                   strength: discord.Option(int, "Siła", max_value=6, min_value=1),  # type: ignore
+                   agility: discord.Option(int, "Zręczność", max_value=6, min_value=1),   # type: ignore
+                   magic: discord.Option(int, "Magia",max_value=6, min_value=1),  # type: ignore
+                   defense: discord.Option(int, "Obrona",max_value=6, min_value=1), # type: ignore
+                   player: discord.Option(discord.User, "Gracz")):  # type: ignore
         role_ids = [1230571733363200159, 1236033602815393852, 1230571733409333330]
         discord_user_id = player.id
         if not ctx.author.guild_permissions.administrator or not any(role.id in role_ids for role in ctx.author.roles):
@@ -37,6 +37,27 @@ def main():
             await ctx.respond(embed = discord.Embed(title="Postać dodana!", description=f"Dodano postać **{name}** do bazy danych!"),ephemeral=True)
         else:
             await ctx.respond(embed = discord.Embed(title="Postać już istnieje", description=f"Istnieje już postać o imieniu **{name}**!"),ephemeral=True)
+
+    @bot.slash_command(description="Sprawdź punkty lub statystyki danych postaci")
+    async def showcharacters(ctx: discord.ApplicationContext,
+                           player: discord.Option(discord.User, "Gracz",required=False),stats: discord.Option(bool, "Czy zmienić punkty na statystyki?",required=False) ):  # type: ignore
+        if not player:
+            id = ctx.author.id
+        else:
+            id = player.id
+        characters = cm.Warrior.get_characters_by_user_id(id)
+
+        if not characters:
+            await ctx.respond(embed=discord.Embed(title="Brak postaci!", description="Nie posiadasz żadnych postaci!"),ephemeral=True)
+            return
+        embed = discord.Embed(title="Twoje postacie:")
+        if not stats:
+            for character in characters:
+                embed.add_field(name=character[0], value=f"Zdrowie: {character[1]} PKT\nSiła: {character[2]} PKT\nZręczność: {character[3]} PKT\nMagia: {character[4]} PKT\nObrona: {character[5]} PKT", inline=False)
+        else:
+            for character in characters:
+                embed.add_field(name=character[0], value=f"HP: {100 + (15*character[1])}\nMax DMG: {(character[2]+2)*6}\nZręczność: {character[3]}\nMax Magiczny DMG: {6*(character[4]+1)}\nObrona: {4*character[5]}% redukcji DMG", inline=False)
+        await ctx.respond(embed=embed,ephemeral=False)
 
     bot.run(TOKEN)
 
