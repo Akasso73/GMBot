@@ -28,8 +28,9 @@ def main():
         if not ctx.author.guild_permissions.administrator or not any(role.id in role_ids for role in ctx.author.roles):
             await ctx.respond(embed=discord.Embed(title="Nie masz uprawnień!", description="Nie masz uprawnień, aby używać tej komendy."),ephemeral=True)
             return
-        if strength + agility + magic + defense > 11:
-            await ctx.respond(embed=discord.Embed(title="Nieprawidłowe statystyki!", description="Suma punktów statysyk musi wynosić 11."),ephemeral=True)
+        suma_pkt=strength + agility + magic + defense
+        if suma_pkt > 11:
+            await ctx.respond(embed=discord.Embed(title="Nieprawidłowe statystyki!", description=f"Suma punktów statysyk musi wynosić 11.\n{suma_pkt-11} za dużo punktów!"),ephemeral=True)
             return
         if not cm.Warrior.character_exists(name):
             warrior = cm.Warrior(name, health, strength, agility, magic, defense, discord_user_id)
