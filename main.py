@@ -60,7 +60,7 @@ def main():
                 embed.add_field(name=character[0], value=f"Zdrowie: {character[1]} PKT\nSiła: {character[2]} PKT\nZręczność: {character[3]} PKT\nMagia: {character[4]} PKT\nObrona: {character[5]} PKT", inline=False)
         else:
             for character in characters:
-                embed.add_field(name=character[0], value=f"HP: {100 + (15*character[1])}\nMax DMG: {(character[2]+2)*6}\nZręczność: {character[3]}\nMax Magiczny DMG: {6*(character[4]+1)}\nObrona: {4*character[5]}% redukcji DMG", inline=False)
+                embed.add_field(name=character[0], value=f"HP: {100 + (15*character[1])}\nMax DMG: {(character[2]+3)*6}\nZręczność: {character[3]}\nMax M.DMG: {6*(character[4]+2)}\nObrona: {4*character[5]}% redukcji obrażeń", inline=False)
         await ctx.respond(embed=embed,ephemeral=True)
 
     bot.run(TOKEN)
