@@ -41,12 +41,15 @@ def main():
     @bot.slash_command(description="Sprawdź punkty lub statystyki danych postaci")
     async def showcharacters(ctx: discord.ApplicationContext,
                            player: discord.Option(discord.User, "Gracz",required=False),stats: discord.Option(bool, "Czy zmienić punkty na statystyki?",required=False) ):  # type: ignore
+        role_ids = [1230571733363200159, 1236033602815393852, 1230571733409333330]
         if not player:
             id = ctx.author.id
+        elif player!=ctx.author and not (ctx.author.guild_permissions.administrator or any(role.id in role_ids for role in ctx.author.roles)):
+            await ctx.respond(embed=discord.Embed(title="Nie masz uprawnień!", description="Nie masz uprawnień, aby używać tej komendy."),ephemeral=True)
+            return
         else:
             id = player.id
         characters = cm.Warrior.get_characters_by_user_id(id)
-
         if not characters:
             await ctx.respond(embed=discord.Embed(title="Brak postaci!", description="Nie posiadasz żadnych postaci!"),ephemeral=True)
             return
@@ -57,7 +60,7 @@ def main():
         else:
             for character in characters:
                 embed.add_field(name=character[0], value=f"HP: {100 + (15*character[1])}\nMax DMG: {(character[2]+2)*6}\nZręczność: {character[3]}\nMax Magiczny DMG: {6*(character[4]+1)}\nObrona: {4*character[5]}% redukcji DMG", inline=False)
-        await ctx.respond(embed=embed,ephemeral=False)
+        await ctx.respond(embed=embed,ephemeral=True)
 
     bot.run(TOKEN)
 
