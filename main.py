@@ -63,6 +63,18 @@ def main():
                 embed.add_field(name=character[0], value=f"HP: {100 + (15*character[1])}\nMax DMG: {(character[2]+3)*6}\nZręczność: {character[3]}\nMax M.DMG: {6*(character[4]+2)}\nObrona: {4*character[5]}% redukcji obrażeń", inline=False)
         await ctx.respond(embed=embed,ephemeral=True)
 
+    @bot.slash_command(description="Usuń postać z bazy danych. Tylko dla adminów!")
+    async def deletecharacter(ctx: discord.ApplicationContext, name: discord.Option(str, "Imię postaci")):
+        role_ids = [1230571733363200159, 1236033602815393852, 1230571733409333330]
+        if not ctx.author.guild_permissions.administrator or not any(role.id in role_ids for role in ctx.author.roles):
+            await ctx.respond(embed=discord.Embed(title="Nie masz uprawnień!", description="Nie masz uprawnień, aby używać tej komendy."),ephemeral=True)
+            return
+        if cm.Warrior.character_exists(name):
+            cm.Warrior.delete_character(name)
+            await ctx.respond(embed = discord.Embed(title="Postać usunięta!", description=f"Usunięto postać **{name}** z bazy danych!"),ephemeral=True)
+        else:
+            await ctx.respond(embed = discord.Embed(title="Postać nie istnieje", description=f"Nie ma postaci o imieniu **{name}**!"),ephemeral=True)
+
     bot.run(TOKEN)
 
 if __name__ == "__main__":

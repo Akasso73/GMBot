@@ -42,7 +42,6 @@ class Warrior:
         result = c.fetchone()
         conn.close()
         return result is not None
-    
     def get_characters_by_user_id(discord_user_id: str):
         conn = sqlite3.connect('warriors.db')
         c = conn.cursor()
@@ -50,4 +49,11 @@ class Warrior:
         results = c.fetchall()
         conn.close()
         return results
+    @classmethod
+    def delete_character(cls, name: str):
+        conn = sqlite3.connect('warriors.db')
+        c = conn.cursor()
+        c.execute("DELETE FROM warriors WHERE name=?", (name,))
+        conn.commit()
+        conn.close()
     
