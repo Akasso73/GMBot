@@ -1,5 +1,11 @@
 import sqlite3
 
+def ensure_table_exists():
+        conn = sqlite3.connect('warriors.db')
+        c = conn.cursor()
+        c.execute("CREATE TABLE IF NOT EXISTS warriors (name text, health integer, strength integer, agility integer, magic integer, defense integer, discord_user_id text)")
+        conn.close()
+
 class Warrior:
     def __init__(self, name: str, health: int, strength: int, agility: int, magic: int, defense: int, discord_user_id: str):
         self.name = name
@@ -26,6 +32,7 @@ class Warrior:
         return obj
 
     def save_to_db(self):
+        ensure_table_exists()
         conn = sqlite3.connect('warriors.db')
         c = conn.cursor()
         c.execute("CREATE TABLE IF NOT EXISTS warriors (name text, health integer, strength integer, agility integer, magic integer, defense integer, discord_user_id text)")
@@ -35,6 +42,7 @@ class Warrior:
 
     @classmethod
     def character_exists(cls, name: str):
+        ensure_table_exists()
         conn = sqlite3.connect('warriors.db')
         c = conn.cursor()
         c.execute("CREATE TABLE IF NOT EXISTS warriors (name text, health isnteger, strength integer, agility integer, magic integer, defense integer, discord_user_id text)")
@@ -42,7 +50,9 @@ class Warrior:
         result = c.fetchone()
         conn.close()
         return result is not None
+    
     def get_characters_by_user_id(discord_user_id: str):
+        ensure_table_exists()
         conn = sqlite3.connect('warriors.db')
         c = conn.cursor()
         c.execute("SELECT * FROM warriors WHERE discord_user_id=?", (discord_user_id,))
@@ -51,6 +61,7 @@ class Warrior:
         return results
     @classmethod
     def delete_character(cls, name: str):
+        ensure_table_exists()
         conn = sqlite3.connect('warriors.db')
         c = conn.cursor()
         c.execute("DELETE FROM warriors WHERE name=?", (name,))
