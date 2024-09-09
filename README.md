@@ -1,1 +1,1 @@
-Służy do zarządzania walkami pomiędzy graczami na eventach i nie tylko.
+Bot do ogólnych rzeczy około DnD na discordzie
